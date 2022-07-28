@@ -239,15 +239,15 @@ else:
             if isinstance(sep, unicode):
                 want_unicode = True
             elif not isinstance(sep, str):
-                raise TypeError("sep must be None or a string")
+                raise TypeError("sep muss None oder eine Zeichenfolge sein")
         end = kwargs.pop("end", None)
         if end is not None:
             if isinstance(end, unicode):
                 want_unicode = True
             elif not isinstance(end, str):
-                raise TypeError("end must be None or a string")
+                raise TypeError("end muss None oder eine Zeichenfolge sein")
         if kwargs:
-            raise TypeError("invalid keyword arguments to print()")
+            raise TypeError("Ungültige Schlüsselwortargumente zum Drucken()")
         if not want_unicode:
             for arg in args:
                 if isinstance(arg, unicode):
@@ -411,7 +411,7 @@ def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT,
     if err is not None:
         raise err
     else:
-        raise socket.error("getaddrinfo returns an empty list")
+        raise socket.error("getaddrinfo gibt eine leere Liste zurück")
 
 
 class SpeedtestHTTPConnection(HTTPConnection):
@@ -467,7 +467,7 @@ if HTTPSConnection:
             self.source_address = source_address
 
         def connect(self):
-            "Connect to a host on a given (SSL) port."
+            "Stellen Sie eine Verbindung zu einem Host an einem bestimmten (SSL-)Port her."
             try:
                 self.sock = socket.create_connection(
                     (self.host, self.port),
@@ -505,12 +505,12 @@ if HTTPSConnection:
                     self.sock = FakeSocket(self.sock, socket.ssl(self.sock))
                 except AttributeError:
                     raise SpeedtestException(
-                        'This version of Python does not support HTTPS/SSL '
+                        'Diese Version von Python unterstützt kein HTTPS/SSL '
                         'functionality'
                     )
             else:
                 raise SpeedtestException(
-                    'This version of Python does not support HTTPS/SSL '
+                    'Diese Version von Python unterstützt kein HTTPS/SSL '
                     'functionality'
                 )
 
@@ -587,11 +587,11 @@ def build_opener(source_address=None, timeout=10):
     `User-Agent`
     """
 
-    printer('Timeout set to %d' % timeout, debug=True)
+    printer('Timeout eingestellt auf %d' % timeout, debug=True)
 
     if source_address:
         source_address_tuple = (source_address, 0)
-        printer('Binding to source address: %r' % (source_address_tuple,),
+        printer('Bindung an Quelladresse: %r' % (source_address_tuple,),
                 debug=True)
     else:
         source_address_tuple = None
@@ -627,8 +627,8 @@ class GzipDecodedResponse(GZIP_BASE):
         # response doesn't support tell() and read(), required by
         # GzipFile
         if not gzip:
-            raise SpeedtestHTTPError('HTTP response body is gzip encoded, '
-                                     'but gzip support is not available')
+            raise SpeedtestHTTPError('Der HTTP-Antworttext ist gzip-codiert, '
+                                     'aber gzip-Unterstützung ist nicht verfügbar')
         IO = BytesIO or StringIO
         self.io = IO()
         while 1:
@@ -1025,7 +1025,7 @@ class SpeedtestResults(object):
         qsargs = parse_qs(response.decode())
         resultid = qsargs.get('resultid')
         if not resultid or len(resultid) != 1:
-            raise ShareResultsSubmitFailure('Could not submit results to '
+            raise ShareResultsSubmitFailure('Ergebnisse konnten nicht übermittelt werden an '
                                             'speedtest.net')
 
         self._share = 'http://www.speedtest.net/result/%s.png' % resultid[0]
@@ -1161,7 +1161,7 @@ class Speedtest(object):
             except ET.ParseError:
                 e = get_exception()
                 raise SpeedtestConfigError(
-                    'Malformed speedtest.net configuration: %s' % e
+                    'Fehlerhafte speedtest.net-Konfiguration: %s' % e
                 )
             server_config = root.find('server-config').attrib
             download = root.find('download').attrib
@@ -1175,7 +1175,7 @@ class Speedtest(object):
             except ExpatError:
                 e = get_exception()
                 raise SpeedtestConfigError(
-                    'Malformed speedtest.net configuration: %s' % e
+                    'Fehlerhafte speedtest.net-Konfiguration: %s' % e
                 )
             server_config = get_attributes_by_tag_name(root, 'server-config')
             download = get_attributes_by_tag_name(root, 'download')
@@ -1255,7 +1255,7 @@ class Speedtest(object):
                     server_list[i] = int(s)
                 except ValueError:
                     raise InvalidServerIDType(
-                        '%s is an invalid server type, must be int' % s
+                        '%s ein ungültiger Servertyp ist, muss sein int' % s
                     )
 
         urls = [
@@ -1311,7 +1311,7 @@ class Speedtest(object):
                         except ET.ParseError:
                             e = get_exception()
                             raise SpeedtestServersError(
-                                'Malformed speedtest.net server list: %s' % e
+                                'Fehlerhafte speedtest.net-Serverliste: %s' % e
                             )
                         elements = etree_iter(root, 'server')
                     except AttributeError:
@@ -1320,7 +1320,7 @@ class Speedtest(object):
                         except ExpatError:
                             e = get_exception()
                             raise SpeedtestServersError(
-                                'Malformed speedtest.net server list: %s' % e
+                                'Fehlerhafte speedtest.net-Serverliste: %s' % e
                             )
                         elements = root.getElementsByTagName('server')
                 except (SyntaxError, xml.parsers.expat.ExpatError):
@@ -1379,7 +1379,7 @@ class Speedtest(object):
         request = build_request(url)
         uh, e = catch_request(request, opener=self._opener)
         if e:
-            raise SpeedtestMiniConnectFailure('Failed to connect to %s' %
+            raise SpeedtestMiniConnectFailure('Verbindung zu konnte nicht hergestellt werden %s' %
                                               server)
         else:
             text = uh.read()
@@ -1403,7 +1403,7 @@ class Speedtest(object):
                         extension = [ext]
                         break
         if not urlparts or not extension:
-            raise InvalidSpeedtestMiniServer('Invalid Speedtest Mini Server: '
+            raise InvalidSpeedtestMiniServer('Ungültiger Speedtest Mini-Server: '
                                              '%s' % server)
 
         self.servers = [{
@@ -1501,7 +1501,7 @@ class Speedtest(object):
         try:
             fastest = sorted(results.keys())[0]
         except IndexError:
-            raise SpeedtestBestServerFailure('Unable to connect to servers to '
+            raise SpeedtestBestServerFailure('Es kann keine Verbindung zu den Servern hergestellt werden '
                                              'test latency.')
         best = results[fastest]
         best['latency'] = fastest
@@ -1710,7 +1710,7 @@ def csv_header(delimiter=','):
 def parse_args():
     """Function to handle building and parsing of command line arguments"""
     description = (
-        'Command line interface for testing internet bandwidth using '
+        'Befehlszeilenschnittstelle zum Testen der Internetbandbreite '
         'speedtest.net.\n'
         '------------------------------------------------------------'
         '--------------\n'
@@ -1725,63 +1725,63 @@ def parse_args():
         pass
     parser.add_argument('--no-download', dest='download', default=True,
                         action='store_const', const=False,
-                        help='Do not perform download test')
+                        help='Führen Sie keinen Download-Test durch')
     parser.add_argument('--no-upload', dest='upload', default=True,
                         action='store_const', const=False,
-                        help='Do not perform upload test')
+                        help='Führen Sie keinen Upload-Test durch')
     parser.add_argument('--single', default=False, action='store_true',
-                        help='Only use a single connection instead of '
-                             'multiple. This simulates a typical file '
+                        help='Verwenden Sie stattdessen nur eine einzige Verbindung '
+                             'mehrere. Dies simuliert eine typische Datei '
                              'transfer.')
     parser.add_argument('--bytes', dest='units', action='store_const',
                         const=('byte', 8), default=('bit', 1),
-                        help='Display values in bytes instead of bits. Does '
-                             'not affect the image generated by --share, nor '
+                        help='Werte in Bytes statt Bits anzeigen. Tut '
+                             'nicht das von --share generierte Bild beeinflussen, noch '
                              'output from --json or --csv')
     parser.add_argument('--share', action='store_true',
-                        help='Generate and provide a URL to the speedtest.net '
-                             'share results image, not displayed with --csv')
+                        help='Generieren Sie eine URL für speedtest.net und geben Sie sie an '
+                             'Ergebnisbild teilen, wird nicht mit --csv angezeigt')
     parser.add_argument('--simple', action='store_true', default=False,
-                        help='Suppress verbose output, only show basic '
+                        help='Ausführliche Ausgabe unterdrücken, nur Basic anzeigen '
                              'information')
     parser.add_argument('--csv', action='store_true', default=False,
-                        help='Suppress verbose output, only show basic '
-                             'information in CSV format. Speeds listed in '
+                        help='Ausführliche Ausgabe unterdrücken, nur Basic anzeigen '
+                             'Informationen im CSV-Format. Geschwindigkeiten aufgeführt in '
                              'bit/s and not affected by --bytes')
     parser.add_argument('--csv-delimiter', default=',', type=PARSER_TYPE_STR,
-                        help='Single character delimiter to use in CSV '
+                        help='Einzelzeichen-Trennzeichen zur Verwendung in CSV '
                              'output. Default ","')
     parser.add_argument('--csv-header', action='store_true', default=False,
-                        help='Print CSV headers')
+                        help='CSV-Kopfzeilen drucken')
     parser.add_argument('--json', action='store_true', default=False,
-                        help='Suppress verbose output, only show basic '
-                             'information in JSON format. Speeds listed in '
+                        help='Ausführliche Ausgabe unterdrücken, nur Basic anzeigen '
+                             'Informationen im JSON-Format. Geschwindigkeiten aufgeführt in '
                              'bit/s and not affected by --bytes')
     parser.add_argument('--list', action='store_true',
-                        help='Display a list of speedtest.net servers '
-                             'sorted by distance')
+                        help='Zeigen Sie eine Liste der speedtest.net-Server an '
+                             'nach Entfernung sortiert')
     parser.add_argument('--server', type=PARSER_TYPE_INT, action='append',
-                        help='Specify a server ID to test against. Can be '
-                             'supplied multiple times')
+                        help='Geben Sie eine Server-ID zum Testen an. Kann sein '
+                             'mehrfach geliefert')
     parser.add_argument('--exclude', type=PARSER_TYPE_INT, action='append',
-                        help='Exclude a server from selection. Can be '
-                             'supplied multiple times')
-    parser.add_argument('--mini', help='URL of the Speedtest Mini server')
-    parser.add_argument('--source', help='Source IP address to bind to')
+                        help='Schließen Sie einen Server von der Auswahl aus. Kann sein '
+                             'mehrfach geliefert')
+    parser.add_argument('--mini', help='URL des Speedtest Mini-Servers')
+    parser.add_argument('--source', help='Quell-IP-Adresse, an die gebunden werden soll')
     parser.add_argument('--timeout', default=10, type=PARSER_TYPE_FLOAT,
-                        help='HTTP timeout in seconds. Default 10')
+                        help='HTTP-Timeout in Sekunden. Standard 10')
     parser.add_argument('--secure', action='store_true',
-                        help='Use HTTPS instead of HTTP when communicating '
-                             'with speedtest.net operated servers')
+                        help='Verwenden Sie bei der Kommunikation HTTPS anstelle von HTTP '
+                             'mit speedtest.net betriebenen Servern')
     parser.add_argument('--no-pre-allocate', dest='pre_allocate',
                         action='store_const', default=True, const=False,
-                        help='Do not pre allocate upload data. Pre allocation '
-                             'is enabled by default to improve upload '
-                             'performance. To support systems with '
-                             'insufficient memory, use this option to avoid a '
+                        help='Upload-Daten nicht vorbelegen. Vorbelegung '
+                             'ist standardmäßig aktiviert, um den Upload zu verbessern '
+                             'Leistung. Zur Unterstützung von Systemen mit '
+                             'unzureichender Speicher, verwenden Sie diese Option, um Folgendes zu vermeiden: '
                              'MemoryError')
     parser.add_argument('--version', action='store_true',
-                        help='Show the version number and exit')
+                        help='Versionsnummer anzeigen und beenden')
     parser.add_argument('--debug', action='store_true',
                         help=ARG_SUPPRESS, default=ARG_SUPPRESS)
 
@@ -1847,11 +1847,11 @@ def shell():
         version()
 
     if not args.download and not args.upload:
-        raise SpeedtestCLIError('Cannot supply both --no-download and '
+        raise SpeedtestCLIError('Kann nicht sowohl --no-download als auch liefern '
                                 '--no-upload')
 
     if len(args.csv_delimiter) != 1:
-        raise SpeedtestCLIError('--csv-delimiter must be a single character')
+        raise SpeedtestCLIError('--csv-delimiter muss ein einzelnes Zeichen sein')
 
     if args.csv_header:
         csv_header(args.csv_delimiter)
@@ -1888,14 +1888,14 @@ def shell():
             secure=args.secure
         )
     except (ConfigRetrievalError,) + HTTP_ERRORS:
-        printer('Cannot retrieve speedtest configuration', error=True)
+        printer('Die Speedtest-Konfiguration kann nicht abgerufen werden', error=True)
         raise SpeedtestCLIError(get_exception())
 
     if args.list:
         try:
             speedtest.get_servers()
         except (ServersRetrievalError,) + HTTP_ERRORS:
-            printer('Cannot retrieve speedtest server list', error=True)
+            printer('Speedtest-Serverliste kann nicht abgerufen werden', error=True)
             raise SpeedtestCLIError(get_exception())
 
         for _, servers in sorted(speedtest.servers.items()):
@@ -1910,42 +1910,42 @@ def shell():
                         raise
         sys.exit(0)
 
-    printer('Testing from %(isp)s (%(ip)s)...' % speedtest.config['client'],
+    printer('Prüfung ab %(isp)s (%(ip)s)...' % speedtest.config['client'],
             quiet)
 
     if not args.mini:
-        printer('Retrieving speedtest.net server list...', quiet)
+        printer('Speedtest.net-Serverliste wird abgerufen...', quiet)
         try:
             speedtest.get_servers(servers=args.server, exclude=args.exclude)
         except NoMatchedServers:
             raise SpeedtestCLIError(
-                'No matched servers: %s' %
+                'Keine übereinstimmenden Server: %s' %
                 ', '.join('%s' % s for s in args.server)
             )
         except (ServersRetrievalError,) + HTTP_ERRORS:
-            printer('Cannot retrieve speedtest server list', error=True)
+            printer('Speedtest-Serverliste kann nicht abgerufen werden', error=True)
             raise SpeedtestCLIError(get_exception())
         except InvalidServerIDType:
             raise SpeedtestCLIError(
-                '%s is an invalid server type, must '
+                '%s ein ungültiger Servertyp ist, muss '
                 'be an int' % ', '.join('%s' % s for s in args.server)
             )
 
         if args.server and len(args.server) == 1:
-            printer('Retrieving information for the selected server...', quiet)
+            printer('Abrufen von Informationen für den ausgewählten Server...', quiet)
         else:
-            printer('Selecting best server based on ping...', quiet)
+            printer('Auswahl des besten Servers basierend auf Ping...', quiet)
         speedtest.get_best_server()
     elif args.mini:
         speedtest.get_best_server(speedtest.set_mini_server(args.mini))
 
     results = speedtest.results
 
-    printer('Hosted by %(sponsor)s (%(name)s) [%(d)0.2f km]: '
+    printer('Veranstaltet von %(sponsor)s (%(name)s) [%(d)0.2f km]: '
             '%(latency)s ms' % results.server, quiet)
 
     if args.download:
-        printer('Testing download speed\n', quiet,
+        printer('Testen der Download-Geschwindigkeit\n', quiet,
                 end=('', '\n')[bool(debug)])
         speedtest.download(
             callback=callback,
@@ -1956,10 +1956,10 @@ def shell():
                  args.units[0]),
                 quiet)
     else:
-        printer('Skipping download test', quiet)
+        printer('Download-Test überspringen', quiet)
 
     if args.upload:
-        printer('Testing upload speed\n', quiet,
+        printer('Upload-Geschwindigkeit testen\n', quiet,
                 end=('', '\n')[bool(debug)])
         speedtest.upload(
             callback=callback,
@@ -1971,7 +1971,7 @@ def shell():
                  args.units[0]),
                 quiet)
     else:
-        printer('Skipping upload test', quiet)
+        printer('Upload-Test überspringen', quiet)
 
     printer('Results:\n%r' % results.dict(), debug=True)
 
